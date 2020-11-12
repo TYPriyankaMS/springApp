@@ -24,4 +24,5 @@ public class Product {
 	private String details;
 	@Column
 	private int quantity;
+	
 }

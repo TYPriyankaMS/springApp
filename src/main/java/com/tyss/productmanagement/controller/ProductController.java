@@ -5,12 +5,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tyss.productmanagement.beans.Product;
@@ -18,14 +20,17 @@ import com.tyss.productmanagement.beans.ProductResponce;
 import com.tyss.productmanagement.repo.ProductRepository;
 
 @RestController
+@RequestMapping("product")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
 	private static final String SUCCESS = "Success";
 	private static final String FAILURE = "Failure";
 	@Autowired
 	private ProductRepository repo;
 
-	@GetMapping(path = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ProductResponce getProductByName(String name) {
+	@GetMapping(path = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+	
+	public ProductResponce getProductByName(@PathVariable("name")String name) {
 		ProductResponce responce = new ProductResponce();
 		Product product = repo.findByName(name);
 		if (product != null) {
@@ -41,7 +46,7 @@ public class ProductController {
 		return responce;
 	}
 
-	@PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping( produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ProductResponce addProduct(@RequestBody Product product) {
 		ProductResponce responce = new ProductResponce();
 		product = repo.save(product);
@@ -58,7 +63,7 @@ public class ProductController {
 		return responce;
 	}
 
-	@PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping( produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ProductResponce modifyProduct(@RequestBody Product product) {
 		ProductResponce responce = new ProductResponce();
 		product = repo.update(product.getQuantity(), product.getDetails(), product.getImageUrl(), product.getId());
@@ -75,7 +80,7 @@ public class ProductController {
 		return responce;
 	}
 
-	@GetMapping(path = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping( produces = MediaType.APPLICATION_JSON_VALUE)
 	public ProductResponce getAllProduct() {
 		ProductResponce responce = new ProductResponce();
 		List<Product> products = repo.findAll();
@@ -92,7 +97,7 @@ public class ProductController {
 		return responce;
 	}
 
-	@DeleteMapping(path = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ProductResponce deleteProduct(@PathVariable("id") int id) {
 		ProductResponce responce = new ProductResponce();
 		repo.deleteById(id);
